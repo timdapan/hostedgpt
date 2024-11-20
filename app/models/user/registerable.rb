@@ -75,8 +75,14 @@ module User::Registerable
       language_models.create!(api_name:, api_service:, name:, supports_tools: false, supports_system_message: false, supports_images:, input_token_cost_cents:, output_token_cost_cents:)
     end
 
-    assistants.create! name: "GPT-4o", language_model: language_models.best_for_api_service(open_ai_api_service).first
-    assistants.create! name: "Claude 3.5 Sonnet", language_model: language_models.best_for_api_service(anthropic_api_service).first
-    assistants.create! name: "Meta Llama 3 70b", language_model: language_models.best_for_api_service(groq_api_service).first
+    [
+      ["GPT-4o", open_ai_api_service],
+      ["Claude 3.5 Sonnet", anthropic_api_service],
+      ["Meta Llama 3 70b", groq_api_service],
+    ].map do |name, api_service|
+      language_model = language_models.best_for_api_service(api_service).first
+      description = "Model #{language_model.api_name} on #{api_service.name}"
+      assistants.create! name:, description:, language_model:
+    end
   end
 end
