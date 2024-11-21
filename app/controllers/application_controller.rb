@@ -37,7 +37,6 @@ class ApplicationController < ActionController::Base
     @nav_assistants = Current.user.assistants.ordered
   end
 
-
   def set_system_ivars
     @system_ivars = public_ivars
   end
